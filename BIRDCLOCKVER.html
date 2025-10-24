@@ -758,13 +758,46 @@ function activateMushroomMode() {
 
         // Enhanced debugging mode toggle with 'd' key
         document.addEventListener('keydown', (e) => {
-    if (e.key === 't' || e.key === 'T') {
+    if (e.key === 'Escape') {
+        // Escape key: close all UI elements for clean view
+        const instructionManual = document.getElementById('instructionManual');
+        const gardenDiary = document.getElementById('gardenDiary');
+        const infoPanel = document.getElementById('infoPanel');
+        const toggleInfo = document.getElementById('toggleInfo');
+        const diaryToggle = document.getElementById('diaryToggle');
+
+        // Close guide/features menu
+        if (instructionManual && instructionManual.style.display === 'block') {
+            instructionManual.style.display = 'none';
+            debugLog("Guide menu closed with Escape");
+        }
+
+        // Close diary
+        if (gardenDiary && gardenDiary.style.display === 'block') {
+            gardenDiary.style.display = 'none';
+            if (diaryToggle) diaryToggle.checked = false;
+            debugLog("Diary closed with Escape");
+        }
+
+        // Close info panel
+        if (infoPanel && infoPanel.style.display === 'block') {
+            infoPanel.style.display = 'none';
+            debugLog("Info panel closed with Escape");
+        }
+
+        // Hide show info button for UI-free view
+        if (toggleInfo && toggleInfo.style.display !== 'none') {
+            toggleInfo.style.display = 'none';
+            window.showInfoButtonHidden = true;
+            debugLog("Show info button hidden with Escape - click anywhere to restore");
+        }
+    } else if (e.key === 't' || e.key === 'T') {
         debugVisuals = !debugVisuals;
         updateDebugVisuals();
     } else if (e.key === 'd' || e.key === 'D') {
         // Toggle advanced debugging with performance stats
         debugVisuals = !debugVisuals;
-        
+
         if (debugVisuals) {
             // Add additional debug info display
             let debugInfo = document.getElementById('advancedDebug');
@@ -787,7 +820,7 @@ function activateMushroomMode() {
             const debugElement = document.getElementById('advancedDebug');
             if (debugElement) debugElement.remove();
         }
-        
+
         updateDebugVisuals();
     } else if (e.key === 'c' || e.key === 'C') {
         // Restore control panel functionality
@@ -797,7 +830,7 @@ function activateMushroomMode() {
             debugLog("Control panel functionality restored");
             updateDebugVisuals(); // Update UI state
         }
-    } 
+    }
 });
 
 
@@ -1005,7 +1038,7 @@ function updateBirdTrails() {
         <li>Food: ${foodItems.length}</li>
         <li>Flowers: ${flowers.length} / ${maxFlowersEver}</li>
     </ul>
-    <strong>Time:</strong> ${timeOfDay < 1 ? 'Day' : 'Night'} (${displayHour12}:${minutes.toString().padStart(2, '0')} ${amPm})<br>
+    <strong>Time:</strong> ${timeOfDay < 1 ? 'Day' : 'Night'} (${displayHour12}:${minutes.toString().padStart(2, '0')})<br>
     <strong>Weather:</strong> ${isRaining ? (isThundering ? 'Thunderstorm' : 'Raining') : 'Clear'}<br>
     <strong>Days Elapsed:</strong> ${dayNightCycleCount}<br>
     <strong>Rainbows Seen:</strong> ${rainbowsShown}
@@ -16327,7 +16360,12 @@ if (toggleWindChimeBtn) {
     toggleWindChimeBtn.style.background = '#4CAF50'; // Green background
     
     debugLog("Wind chimes enabled with improved timer logic");
-} else {}
+} else {
+    // Turn off wind chimes
+    toggleWindChimeBtn.textContent = '🔔 Wind Chimes: OFF';
+    toggleWindChimeBtn.style.background = '#f44336'; // Red background
+    debugLog("Wind chimes disabled");
+}
         
         // Force a user interaction with audio context (needed for browsers)
         if (audioContext && audioContext.state === 'suspended') {
@@ -16390,12 +16428,20 @@ canvas.addEventListener('click', (e) => {
     // Calculate the correct coordinates, accounting for scroll position
     const x = e.clientX - rect.left - scrollLeft;
     const y = e.clientY - rect.top - scrollTop;
-    
+
     // Scale coordinates if needed
     const scaleX = canvas.width / rect.width;
     const scaleY = canvas.height / rect.height;
     const scaledX = x * scaleX;
     const scaledY = y * scaleY;
+
+    // Restore show info button if it was hidden by Escape key
+    const toggleInfo = document.getElementById('toggleInfo');
+    if (window.showInfoButtonHidden && toggleInfo) {
+        toggleInfo.style.display = 'block';
+        window.showInfoButtonHidden = false;
+        debugLog("Show info button restored on click");
+    }
     
     // Triple-click detection logic
     const currentTime = Date.now();
