@@ -13630,10 +13630,22 @@ function drawAnts() {
 
 
         // V26: Reduced squirrel spawn rate
+        // Core gameplay loop: More branches attract more squirrels
         function spawnSquirrels() {
             if (squirrels.length >= MAX_SQUIRRELS) return;
 
-            if (Math.random() < 0.012) { // Reduced from 0.02 to dial back squirrel spawns
+            // Count total branches across all trees
+            let totalBranches = 0;
+            trees.forEach(tree => {
+                totalBranches += tree.branches ? tree.branches.length : 0;
+            });
+
+            // Base spawn chance, increased by branch count
+            let spawnChance = 0.012; // Base: 1.2%
+            const branchMultiplier = Math.min(totalBranches / 10, 2); // Up to 2x multiplier (caps at 20 branches)
+            spawnChance = spawnChance * (1 + branchMultiplier);
+
+            if (Math.random() < spawnChance) { // Reduced from 0.02 to dial back squirrel spawns
                 const x = Math.random() < 0.5 ? -30 : canvas.width + 30;
                 const y = canvas.height * GROUND_HEIGHT_RATIO - 5;
 
@@ -13642,26 +13654,41 @@ function drawAnts() {
                 squirrel.direction = x < 0 ? 1 : -1;
 
                 squirrels.push(squirrel);
-                debugLog(`Squirrel spawned at (${x}, ${y})`);
+
+                if (totalBranches > 10) {
+                    debugLog(`Squirrel attracted by ${totalBranches} branches!`);
+                } else {
+                    debugLog(`Squirrel spawned at (${x}, ${y})`);
+                }
             }
         }
 
         // V26: Increased rat spawn rate for better visibility
+        // Core gameplay loop: More poop attracts more rats
         function spawnRats() {
             if (rats.length >= MAX_RATS) return;
 
-            if (Math.random() < 0.04) { // Increased from 0.02 to make rats more common
+            // Base spawn chance, increased by poop count
+            let spawnChance = 0.04; // Base: 4%
+            const poopMultiplier = Math.min(birdPoops.length / 5, 2); // Up to 2x multiplier (caps at 10 poops)
+            spawnChance = spawnChance * (1 + poopMultiplier);
+
+            if (Math.random() < spawnChance) {
                 const x = Math.random() < 0.5 ? -30 : canvas.width + 30;
                 const y = canvas.height * GROUND_HEIGHT_RATIO;
 
                 // Reduced chance to spawn a rat king
-                const isRatKing = rats.length > 0 && Math.random() < RAT_KING_FORMATION_CHANCE; // Reduced from 0.2 to 0.15
+                const isRatKing = rats.length > 0 && Math.random() < RAT_KING_FORMATION_CHANCE;
 
                 // Create rat
                 const rat = new Rat(x, y, isRatKing);
                 rats.push(rat);
 
-                debugLog(`${isRatKing ? 'Rat king' : 'Rat'} spawned at (${x}, ${y})`);
+                if (birdPoops.length > 5) {
+                    debugLog(`${isRatKing ? 'Rat king' : 'Rat'} attracted by ${birdPoops.length} poops!`);
+                } else {
+                    debugLog(`${isRatKing ? 'Rat king' : 'Rat'} spawned at (${x}, ${y})`);
+                }
             }
         }
 
