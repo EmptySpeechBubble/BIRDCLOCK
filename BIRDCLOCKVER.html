@@ -292,12 +292,15 @@
         <div class="info-panel" id="infoPanel" style="display: none;">
             <h3>Garden Ecosystem</h3>
             <div id="stats"></div>
-            <div style="margin: 10px 0; padding: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; display: flex; gap: 15px;">
+            <div style="margin: 10px 0; padding: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; display: flex; flex-direction: column; gap: 8px;">
                 <label style="cursor: pointer; user-select: none;" title="Show Real-Time Clock & Forecast">
                     <input type="checkbox" id="clockToggle" style="margin-right: 5px;">
                     🕐
                 </label>
-                <button id="diaryBtn" style="background: none; border: none; cursor: pointer; font-size: 18px; padding: 0;" title="Garden Diary">📖</button>
+                <label style="cursor: pointer; user-select: none;" title="Show Garden Diary">
+                    <input type="checkbox" id="diaryToggle" style="margin-right: 5px;">
+                    📖
+                </label>
             </div>
             <button id="screenshotBtn" class="screenshot-btn">📷 Take Screenshot</button>
             <button id="manualBtn" class="manual-btn">📖 Guide & Features</button>
@@ -503,7 +506,6 @@
         </details>
 
         <div class="section philosophy">
-            <p><em>"The garden is most beautiful when observed, not controlled. Let it breathe. Let it live. You are a guest in their world."</em></p>
             <p><strong>Relax. Watch. Enjoy. 🌿</strong></p>
         </div>
     </div>
@@ -532,9 +534,7 @@
             </div>
         </div>
 
-        <div class="section philosophy">
-            <p><em>"Every garden tells a story. This is yours."</em></p>
-        </div>
+        <!-- Philosophy quote removed per user request -->
     </div>
 
     <script>
@@ -14020,26 +14020,21 @@ function spawnOwls() {
                 { name: "Three Little Birds", notes: [523, 587, 659, 698, 659, 587, 523], durations: [0.2, 0.2, 0.2, 0.25, 0.2, 0.2, 0.3] },
                 // "What a Wonderful World" - gentle and sweet
                 { name: "What a Wonderful World", notes: [523, 587, 659, 783, 880, 783, 659], durations: [0.25, 0.2, 0.25, 0.3, 0.3, 0.25, 0.3] },
-                // "Let It Be" - contemplative melody
-                { name: "Let It Be", notes: [659, 698, 783, 880, 783, 698, 659], durations: [0.25, 0.2, 0.25, 0.35, 0.25, 0.2, 0.3] },
-                // "Here Comes the Sun" - bright and hopeful
-                { name: "Here Comes the Sun", notes: [587, 659, 698, 783, 698, 659, 587], durations: [0.2, 0.2, 0.2, 0.3, 0.2, 0.2, 0.3] },
-                // "Stand by Me" - steady and comforting
-                { name: "Stand by Me", notes: [523, 523, 587, 659, 698, 659, 587], durations: [0.2, 0.2, 0.2, 0.25, 0.3, 0.25, 0.3] },
-                // "Blackbird" - delicate picking pattern
-                { name: "Blackbird", notes: [698, 783, 880, 987, 880, 783, 698], durations: [0.15, 0.15, 0.2, 0.25, 0.2, 0.15, 0.3] },
-                // "My Girl" - classic soul melody
-                { name: "My Girl", notes: [659, 698, 783, 698, 659, 587, 523], durations: [0.2, 0.2, 0.3, 0.2, 0.2, 0.2, 0.3] },
-                // "Isn't She Lovely" - Stevie Wonder classic
-                { name: "Isn't She Lovely", notes: [587, 659, 698, 783, 880, 783, 698, 659], durations: [0.15, 0.15, 0.2, 0.2, 0.25, 0.2, 0.15, 0.25] },
-                // "Can't Help Falling in Love" - romantic melody
-                { name: "Can't Help Falling in Love", notes: [523, 587, 659, 698, 783, 698, 659, 587, 523], durations: [0.2, 0.2, 0.25, 0.25, 0.3, 0.25, 0.25, 0.2, 0.3] },
-                // "Yellow Submarine" - playful Beatles tune
-                { name: "Yellow Submarine", notes: [523, 523, 659, 659, 698, 698, 783], durations: [0.15, 0.15, 0.15, 0.15, 0.2, 0.2, 0.3] },
-                // "Octopus's Garden" - whimsical underwater feel
-                { name: "Octopus's Garden", notes: [587, 659, 698, 783, 698, 659, 587, 523], durations: [0.15, 0.15, 0.2, 0.25, 0.2, 0.15, 0.15, 0.3] },
-                // "You Are My Sunshine" - sweet and simple
-                { name: "You Are My Sunshine", notes: [523, 587, 659, 698, 659, 587, 523], durations: [0.2, 0.2, 0.25, 0.3, 0.25, 0.2, 0.3] }
+                // 1980s and 90s classics
+                { name: "Livin' On A Prayer", notes: [659, 698, 783, 880, 783, 698, 659], durations: [0.15, 0.15, 0.2, 0.3, 0.2, 0.15, 0.3] },
+                { name: "Don't Stop Believin'", notes: [523, 587, 659, 698, 783, 698, 659], durations: [0.2, 0.2, 0.2, 0.25, 0.3, 0.25, 0.3] },
+                { name: "Sweet Child O' Mine", notes: [587, 659, 698, 783, 698, 659, 587], durations: [0.15, 0.15, 0.2, 0.25, 0.2, 0.15, 0.3] },
+                { name: "Take On Me", notes: [783, 880, 987, 1046, 987, 880, 783], durations: [0.15, 0.15, 0.2, 0.25, 0.2, 0.15, 0.3] },
+                { name: "Africa", notes: [587, 659, 698, 783, 698, 659, 587, 523], durations: [0.2, 0.2, 0.2, 0.3, 0.2, 0.2, 0.2, 0.3] },
+                { name: "Every Breath You Take", notes: [659, 698, 783, 880, 783, 698, 659], durations: [0.2, 0.2, 0.25, 0.3, 0.25, 0.2, 0.3] },
+                { name: "I Wanna Dance with Somebody", notes: [698, 783, 880, 987, 880, 783, 698], durations: [0.15, 0.15, 0.2, 0.25, 0.2, 0.15, 0.3] },
+                { name: "Girls Just Want to Have Fun", notes: [659, 698, 783, 698, 659, 587, 523], durations: [0.15, 0.15, 0.2, 0.2, 0.15, 0.15, 0.3] },
+                { name: "Purple Rain", notes: [523, 587, 659, 698, 783, 698, 659], durations: [0.25, 0.25, 0.25, 0.3, 0.35, 0.3, 0.35] },
+                { name: "Under Pressure", notes: [587, 659, 698, 659, 587, 523, 587], durations: [0.15, 0.15, 0.25, 0.2, 0.15, 0.15, 0.3] },
+                { name: "Billie Jean", notes: [659, 698, 783, 698, 659, 587, 659], durations: [0.15, 0.15, 0.2, 0.2, 0.15, 0.15, 0.3] },
+                { name: "Beat It", notes: [523, 587, 659, 698, 659, 587, 523], durations: [0.15, 0.15, 0.2, 0.25, 0.2, 0.15, 0.3] },
+                { name: "Faith", notes: [587, 659, 698, 783, 880, 783, 698], durations: [0.15, 0.15, 0.2, 0.2, 0.25, 0.2, 0.3] },
+                { name: "Wonderwall", notes: [587, 659, 698, 783, 698, 659, 587], durations: [0.2, 0.2, 0.25, 0.3, 0.25, 0.2, 0.3] }
             ];
 
             // Pick ONE random melody
@@ -14108,33 +14103,33 @@ function spawnOwls() {
             }, totalDuration * 1000 + 500);
         };
 
-        // Get all 24 melodies for hourly chimes
+        // Get all 24 melodies for hourly chimes - 1980s and 90s classics
         function getAllMelodies() {
             return [
-                { name: "Call Me Maybe", notes: [659, 587, 523, 587, 659, 698, 783], durations: [0.15, 0.15, 0.2, 0.15, 0.15, 0.2, 0.3] },
-                { name: "Who Let the Dogs Out", notes: [523, 523, 587, 659, 523, 523, 587, 659], durations: [0.12, 0.12, 0.12, 0.25, 0.12, 0.12, 0.12, 0.25] },
-                { name: "Sittin' On The Dock of the Bay", notes: [523, 587, 659, 698, 659, 587, 523], durations: [0.2, 0.2, 0.25, 0.3, 0.25, 0.2, 0.3] },
-                { name: "Me and Julio Down by the Schoolyard", notes: [587, 659, 698, 783, 698, 659, 587], durations: [0.15, 0.15, 0.2, 0.25, 0.2, 0.15, 0.25] },
-                { name: "Young Folks", notes: [880, 783, 698, 783, 880, 987, 880], durations: [0.2, 0.15, 0.15, 0.2, 0.2, 0.25, 0.3] },
-                { name: "Pumped Up Kicks", notes: [659, 698, 783, 698, 659, 587, 659], durations: [0.2, 0.2, 0.3, 0.2, 0.2, 0.2, 0.3] },
-                { name: "Don't Worry Be Happy", notes: [523, 659, 783, 880, 783, 659, 523], durations: [0.2, 0.2, 0.2, 0.3, 0.2, 0.2, 0.3] },
+                { name: "Sweet Child O' Mine", notes: [587, 659, 698, 783, 698, 659, 587], durations: [0.15, 0.15, 0.2, 0.25, 0.2, 0.15, 0.3] },
+                { name: "Take On Me", notes: [783, 880, 987, 1046, 987, 880, 783], durations: [0.15, 0.15, 0.2, 0.25, 0.2, 0.15, 0.3] },
+                { name: "Livin' On A Prayer", notes: [659, 698, 783, 880, 783, 698, 659], durations: [0.15, 0.15, 0.2, 0.3, 0.2, 0.15, 0.3] },
+                { name: "Don't Stop Believin'", notes: [523, 587, 659, 698, 783, 698, 659], durations: [0.2, 0.2, 0.2, 0.25, 0.3, 0.25, 0.3] },
+                { name: "Africa", notes: [587, 659, 698, 783, 698, 659, 587, 523], durations: [0.2, 0.2, 0.2, 0.3, 0.2, 0.2, 0.2, 0.3] },
+                { name: "Every Breath You Take", notes: [659, 698, 783, 880, 783, 698, 659], durations: [0.2, 0.2, 0.25, 0.3, 0.25, 0.2, 0.3] },
+                { name: "I Wanna Dance with Somebody", notes: [698, 783, 880, 987, 880, 783, 698], durations: [0.15, 0.15, 0.2, 0.25, 0.2, 0.15, 0.3] },
+                { name: "Girls Just Want to Have Fun", notes: [659, 698, 783, 698, 659, 587, 523], durations: [0.15, 0.15, 0.2, 0.2, 0.15, 0.15, 0.3] },
+                { name: "Purple Rain", notes: [523, 587, 659, 698, 783, 698, 659], durations: [0.25, 0.25, 0.25, 0.3, 0.35, 0.3, 0.35] },
+                { name: "Under Pressure", notes: [587, 659, 698, 659, 587, 523, 587], durations: [0.15, 0.15, 0.25, 0.2, 0.15, 0.15, 0.3] },
                 { name: "Walk Like an Egyptian", notes: [587, 523, 587, 698, 783, 698, 587], durations: [0.15, 0.15, 0.15, 0.2, 0.25, 0.2, 0.3] },
-                { name: "Whistle While You Work", notes: [523, 587, 659, 698, 783, 698, 659, 587, 523], durations: [0.15, 0.15, 0.15, 0.2, 0.25, 0.2, 0.15, 0.15, 0.3] },
-                { name: "Happy", notes: [659, 659, 698, 783, 880, 783, 698], durations: [0.15, 0.15, 0.2, 0.2, 0.3, 0.2, 0.3] },
-                { name: "Somewhere Over the Rainbow", notes: [523, 659, 783, 880, 987, 880, 783, 659], durations: [0.2, 0.2, 0.25, 0.3, 0.3, 0.25, 0.2, 0.3] },
-                { name: "Lean on Me", notes: [587, 659, 698, 659, 587, 523], durations: [0.2, 0.25, 0.3, 0.25, 0.2, 0.3] },
-                { name: "Three Little Birds", notes: [523, 587, 659, 698, 659, 587, 523], durations: [0.2, 0.2, 0.2, 0.25, 0.2, 0.2, 0.3] },
-                { name: "What a Wonderful World", notes: [523, 587, 659, 783, 880, 783, 659], durations: [0.25, 0.2, 0.25, 0.3, 0.3, 0.25, 0.3] },
-                { name: "Let It Be", notes: [659, 698, 783, 880, 783, 698, 659], durations: [0.25, 0.2, 0.25, 0.35, 0.25, 0.2, 0.3] },
-                { name: "Here Comes the Sun", notes: [587, 659, 698, 783, 698, 659, 587], durations: [0.2, 0.2, 0.2, 0.3, 0.2, 0.2, 0.3] },
-                { name: "Stand by Me", notes: [523, 523, 587, 659, 698, 659, 587], durations: [0.2, 0.2, 0.2, 0.25, 0.3, 0.25, 0.3] },
-                { name: "Blackbird", notes: [698, 783, 880, 987, 880, 783, 698], durations: [0.15, 0.15, 0.2, 0.25, 0.2, 0.15, 0.3] },
-                { name: "My Girl", notes: [659, 698, 783, 698, 659, 587, 523], durations: [0.2, 0.2, 0.3, 0.2, 0.2, 0.2, 0.3] },
-                { name: "Isn't She Lovely", notes: [587, 659, 698, 783, 880, 783, 698, 659], durations: [0.15, 0.15, 0.2, 0.2, 0.25, 0.2, 0.15, 0.25] },
-                { name: "Can't Help Falling in Love", notes: [523, 587, 659, 698, 783, 698, 659, 587, 523], durations: [0.2, 0.2, 0.25, 0.25, 0.3, 0.25, 0.25, 0.2, 0.3] },
-                { name: "Yellow Submarine", notes: [523, 523, 659, 659, 698, 698, 783], durations: [0.15, 0.15, 0.15, 0.15, 0.2, 0.2, 0.3] },
-                { name: "Octopus's Garden", notes: [587, 659, 698, 783, 698, 659, 587, 523], durations: [0.15, 0.15, 0.2, 0.25, 0.2, 0.15, 0.15, 0.3] },
-                { name: "You Are My Sunshine", notes: [523, 587, 659, 698, 659, 587, 523], durations: [0.2, 0.2, 0.25, 0.3, 0.25, 0.2, 0.3] }
+                { name: "Billie Jean", notes: [659, 698, 783, 698, 659, 587, 659], durations: [0.15, 0.15, 0.2, 0.2, 0.15, 0.15, 0.3] },
+                { name: "Beat It", notes: [523, 587, 659, 698, 659, 587, 523], durations: [0.15, 0.15, 0.2, 0.25, 0.2, 0.15, 0.3] },
+                { name: "Faith", notes: [587, 659, 698, 783, 880, 783, 698], durations: [0.15, 0.15, 0.2, 0.2, 0.25, 0.2, 0.3] },
+                { name: "Careless Whisper", notes: [659, 698, 783, 880, 987, 880, 783], durations: [0.2, 0.2, 0.25, 0.3, 0.35, 0.3, 0.35] },
+                { name: "Nothing Compares 2 U", notes: [523, 587, 659, 698, 783, 698, 659], durations: [0.25, 0.25, 0.25, 0.3, 0.35, 0.3, 0.35] },
+                { name: "Wonderwall", notes: [587, 659, 698, 783, 698, 659, 587], durations: [0.2, 0.2, 0.25, 0.3, 0.25, 0.2, 0.3] },
+                { name: "Smells Like Teen Spirit", notes: [523, 587, 523, 659, 698, 659, 587], durations: [0.15, 0.15, 0.15, 0.2, 0.25, 0.2, 0.3] },
+                { name: "Mr. Brightside", notes: [659, 698, 783, 880, 783, 698, 659], durations: [0.15, 0.15, 0.2, 0.25, 0.2, 0.15, 0.3] },
+                { name: "Don't You (Forget About Me)", notes: [587, 659, 698, 783, 880, 783, 698], durations: [0.2, 0.2, 0.2, 0.25, 0.3, 0.25, 0.3] },
+                { name: "Everybody Wants to Rule the World", notes: [523, 587, 659, 698, 783, 698, 659, 587], durations: [0.2, 0.2, 0.2, 0.25, 0.3, 0.25, 0.2, 0.3] },
+                { name: "The Power of Love", notes: [523, 659, 783, 880, 987, 880, 783, 659], durations: [0.25, 0.25, 0.25, 0.3, 0.35, 0.3, 0.25, 0.3] },
+                { name: "Time After Time", notes: [659, 698, 783, 880, 783, 698, 659, 587], durations: [0.2, 0.2, 0.25, 0.3, 0.25, 0.2, 0.2, 0.3] },
+                { name: "Don't Stop Believin'", notes: [523, 587, 659, 698, 783, 698, 659], durations: [0.2, 0.2, 0.2, 0.25, 0.3, 0.25, 0.3] }
             ];
         }
 
@@ -15684,6 +15679,8 @@ if (antHill) {
                 if (audioContext && audioContext.state === 'running') {
                     audioContext.suspend();
                 }
+                // Also disable wind chimes when muting
+                windChimeEnabled = false;
                 muteBtn.textContent = '🔇 Unmute';
                 muteBtn.classList.add('muted');
                 debugLog("Audio muted");
@@ -15712,21 +15709,27 @@ if (antHill) {
     }
 
     // Garden Diary handlers
-    const diaryBtn = document.getElementById('diaryBtn');
+    const diaryToggle = document.getElementById('diaryToggle');
     const gardenDiary = document.getElementById('gardenDiary');
     const closeDiaryBtn = document.getElementById('closeDiaryBtn');
 
-    if (diaryBtn && gardenDiary) {
-        diaryBtn.addEventListener('click', () => {
-            gardenDiary.style.display = 'block';
-            updateDiaryDisplay();
-            debugLog("Garden diary opened");
+    if (diaryToggle && gardenDiary) {
+        diaryToggle.addEventListener('change', () => {
+            if (diaryToggle.checked) {
+                gardenDiary.style.display = 'block';
+                updateDiaryDisplay();
+                debugLog("Garden diary opened");
+            } else {
+                gardenDiary.style.display = 'none';
+                debugLog("Garden diary closed");
+            }
         });
     }
 
-    if (closeDiaryBtn && gardenDiary) {
+    if (closeDiaryBtn && gardenDiary && diaryToggle) {
         closeDiaryBtn.addEventListener('click', () => {
             gardenDiary.style.display = 'none';
+            diaryToggle.checked = false;
             debugLog("Garden diary closed");
         });
     }
