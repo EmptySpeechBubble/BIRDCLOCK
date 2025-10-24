@@ -2008,6 +2008,11 @@ function createFlower(x, y) {
         function scheduleRain() {
           // Much less frequent rain
             const nextRainDelay = 480000 + Math.random() * 300000; // 8-13 minutes between rains (doubled from 4-7)
+
+            // Store next rain time for accurate forecast
+            window.nextScheduledRainTime = Date.now() + nextRainDelay;
+            window.nextRainWillThunder = Math.random() < LIGHTNING_CHANCE;
+
             const rainTimer = setTimeout(() => {
                 if (Math.random() < RAIN_PROBABILITY) {
                     // Add cloud buildup before rain starts
@@ -14786,35 +14791,47 @@ function spawnOwls() {
         }
 
         // Update and draw all elements
-        // Weather Forecast System
+        // Weather Forecast System - ACCURATE for next 3 minutes
         function generateWeatherForecast() {
-            // Generate predictions for next 3 weather events
-            // Based on average rain timing: 8-13 minutes
-            const avgRainDelay = 480000 + 150000; // midpoint: 10.5 minutes
             const currentTime = Date.now();
+            const threeMinutesFromNow = currentTime + (3 * 60 * 1000); // 3 minutes
 
             nextWeatherEvents = [];
 
-            // Simulate next 3 potential events
-            for (let i = 0; i < 3; i++) {
-                const eventTime = currentTime + (avgRainDelay * (i + 1));
-                const willRain = Math.random() < 0.7; // Higher probability for display purposes
+            // Check if currently raining
+            if (isRaining) {
+                nextWeatherEvents.push({
+                    type: isThundering ? 'thunder' : 'rain',
+                    icon: isThundering ? '⛈️' : '🌧️',
+                    time: currentTime
+                });
+            }
 
-                if (willRain) {
-                    const willThunder = Math.random() < 0.3;
+            // Check if rain is scheduled within next 3 minutes
+            if (window.nextScheduledRainTime) {
+                const timeUntilRain = window.nextScheduledRainTime - currentTime;
+
+                if (timeUntilRain > 0 && timeUntilRain <= 180000) { // Within 3 minutes
+                    const willThunder = window.nextRainWillThunder || false;
                     nextWeatherEvents.push({
                         type: willThunder ? 'thunder' : 'rain',
                         icon: willThunder ? '⛈️' : '🌧️',
-                        time: eventTime
-                    });
-                } else {
-                    nextWeatherEvents.push({
-                        type: 'clear',
-                        icon: '☀️',
-                        time: eventTime
+                        time: window.nextScheduledRainTime
                     });
                 }
             }
+
+            // Fill remaining slots with clear weather if less than 3 events
+            while (nextWeatherEvents.length < 3) {
+                nextWeatherEvents.push({
+                    type: 'clear',
+                    icon: '☀️',
+                    time: currentTime + (60000 * (nextWeatherEvents.length + 1)) // 1, 2, 3 minutes out
+                });
+            }
+
+            // Only show first 3
+            nextWeatherEvents = nextWeatherEvents.slice(0, 3);
         }
 
         // Draw large transparent clock in sky with forecast
@@ -14871,6 +14888,11 @@ function spawnOwls() {
             // Store clock number positions for bird landing
             window.clockNumberPositions = [];
 
+            // Store previous time for spook detection
+            if (!window.previousClockTime) {
+                window.previousClockTime = timeText;
+            }
+
             // Draw each character with individual opacity based on bird presence
             for (let i = 0; i < timeText.length; i++) {
                 const char = timeText[i];
@@ -14879,24 +14901,25 @@ function spawnOwls() {
 
                 // Check if a bird is near this character
                 let birdNearby = false;
-                if (char !== ':') {
-                    // Store position for perching
-                    window.clockNumberPositions.push({
-                        x: charX,
-                        y: clockY - 100, // top of numbers (adjusted for larger size)
-                        width: charWidth,
-                        charIndex: i
-                    });
 
-                    // Check if any bird is perched on this number
-                    birdNearby = birdsOnClock.some(birdPos => {
-                        const dist = Math.sqrt(
-                            Math.pow(birdPos.birdX - charX, 2) +
-                            Math.pow(birdPos.birdY - (clockY - 100), 2)
-                        );
-                        return dist < charWidth;
-                    });
-                }
+                // Store position for perching (including colon!)
+                window.clockNumberPositions.push({
+                    x: charX,
+                    y: clockY - 100, // top of numbers (adjusted for larger size)
+                    width: charWidth,
+                    charIndex: i,
+                    char: char,
+                    isColon: char === ':'
+                });
+
+                // Check if any bird is perched on this character
+                birdNearby = birdsOnClock.some(birdPos => {
+                    const dist = Math.sqrt(
+                        Math.pow(birdPos.birdX - charX, 2) +
+                        Math.pow(birdPos.birdY - (clockY - 100), 2)
+                    );
+                    return dist < charWidth;
+                });
 
                 // Increase opacity if bird is nearby
                 const charOpacity = birdNearby ? timeOpacity * 3 : timeOpacity; // 3x more opaque with bird
@@ -14904,6 +14927,27 @@ function spawnOwls() {
 
                 // Draw this character
                 ctx.fillText(char, charX, charY);
+            }
+
+            // Detect time change and spook birds
+            if (window.previousClockTime !== timeText) {
+                // Time has changed! Spook any birds on the clock
+                birds.forEach(bird => {
+                    if (bird.perchTarget && bird.perchTarget.isClock) {
+                        // Bird is on clock - get spooked!
+                        bird.state = BIRD_STATES.FLEEING;
+                        bird.stateTimer = 0;
+                        bird.perchTarget = null;
+
+                        // Fly away in random direction
+                        const fleeX = bird.x + (Math.random() - 0.5) * 400;
+                        const fleeY = bird.y - 100 - Math.random() * 100;
+                        bird.generatePath(fleeX, fleeY);
+
+                        debugLog(`Bird spooked by clock change! ${window.previousClockTime} -> ${timeText}`);
+                    }
+                });
+                window.previousClockTime = timeText;
             }
 
             // Draw weather forecast icons below clock
@@ -15109,6 +15153,18 @@ function spawnOwls() {
 // Update color cycling for mushroom mode
 if (mushroomMode) {
         colorCycleTimer += deltaTime;
+    }
+
+    // Update weather forecast on the minute (every 60 seconds)
+    if (!window.lastForecastUpdate) {
+        window.lastForecastUpdate = now;
+        generateWeatherForecast();
+    }
+    const timeSinceLastForecastUpdate = now - window.lastForecastUpdate;
+    if (timeSinceLastForecastUpdate >= 60000) { // 60 seconds = 1 minute
+        generateWeatherForecast();
+        window.lastForecastUpdate = now;
+        debugLog("Weather forecast updated (on the minute)");
     }
 
     // Clear canvas
