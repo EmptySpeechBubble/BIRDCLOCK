@@ -2963,6 +2963,27 @@ currentHour = Math.floor(((timeOfDay < 1 ? timeOfDay * 12 : 12 + (timeOfDay - 1)
         dayNightCycleCount++;
         // No modulo operation here to ensure days keep counting past 99
         debugLog(`Day/night cycle count: ${dayNightCycleCount}`);
+
+        // Add daily summary entry to diary
+        const birdCount = birds.length;
+        const nestCount = nests.filter(n => n.isComplete).length;
+        const babyCount = babyBirds.length;
+        let summaryText = `Day ${dayNightCycleCount} complete. `;
+
+        if (birdCount > 0) {
+            summaryText += `${birdCount} bird${birdCount !== 1 ? 's' : ''} in the garden. `;
+        }
+        if (nestCount > 0) {
+            summaryText += `${nestCount} active nest${nestCount !== 1 ? 's' : ''}. `;
+        }
+        if (babyCount > 0) {
+            summaryText += `${babyCount} baby bird${babyCount !== 1 ? 's' : ''} growing. `;
+        }
+        if (birdCount === 0 && nestCount === 0) {
+            summaryText += `The garden awaits its first visitors.`;
+        }
+
+        addDiaryEntry(summaryText, 'normal');
     }
     
     // Morning food and worm spawn (around 6-7 AM)
@@ -14611,7 +14632,7 @@ function spawnOwls() {
 
                 // Fade out and float up
                 const opacity = 1 - progress;
-                const floatUp = progress * 30;
+                const floatUp = progress * (mushroomMode ? 60 : 30); // Float higher in mushroom mode
 
                 // Different note styles based on chirp type
                 let noteSymbol = '♪';
@@ -14651,24 +14672,49 @@ function spawnOwls() {
                         break;
                 }
 
+                // Mushroom mode: MUCH larger notes with dynamic expansion
+                if (mushroomMode) {
+                    // Start at 2x size and expand to 4x, then shrink back
+                    const expansionCurve = Math.sin(progress * Math.PI); // 0 -> 1 -> 0
+                    const sizeMultiplier = 2 + (expansionCurve * 2); // 2x to 4x to 2x
+                    noteSize = noteSize * sizeMultiplier;
+
+                    // Rainbow cycling color
+                    const hue = (colorCycleTimer / 50 + chirp.timestamp / 100) % 360;
+                    noteColor = `hsl(${hue}, 100%, 60%)`;
+                }
+
                 // Draw music note
                 ctx.save();
                 ctx.globalAlpha = opacity;
-                ctx.font = `${noteSize}px Arial`;
+                ctx.font = `bold ${noteSize}px Arial`;
                 ctx.fillStyle = noteColor;
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
 
-                // Add slight side-to-side wobble
-                const wobble = Math.sin(age / 100) * 3;
+                // Add wobble (more dramatic in mushroom mode)
+                const wobbleAmount = mushroomMode ? 10 : 3;
+                const wobble = Math.sin(age / 100) * wobbleAmount;
 
-                ctx.fillText(noteSymbol, chirp.x + wobble, chirp.y - 20 - floatUp);
-
-                // Add glow effect for intensity
-                if (chirp.intensity > 1) {
-                    ctx.shadowColor = noteColor;
-                    ctx.shadowBlur = 5 * chirp.intensity;
+                // Rotation in mushroom mode
+                if (mushroomMode) {
+                    ctx.translate(chirp.x + wobble, chirp.y - 20 - floatUp);
+                    ctx.rotate((progress * 360 * Math.PI) / 180); // Full rotation
+                    ctx.fillText(noteSymbol, 0, 0);
+                } else {
                     ctx.fillText(noteSymbol, chirp.x + wobble, chirp.y - 20 - floatUp);
+                }
+
+                // Add glow effect (enhanced in mushroom mode)
+                const glowIntensity = mushroomMode ? 15 : 5;
+                if (chirp.intensity > 1 || mushroomMode) {
+                    ctx.shadowColor = noteColor;
+                    ctx.shadowBlur = glowIntensity * (chirp.intensity || 1);
+                    if (mushroomMode) {
+                        ctx.fillText(noteSymbol, 0, 0);
+                    } else {
+                        ctx.fillText(noteSymbol, chirp.x + wobble, chirp.y - 20 - floatUp);
+                    }
                 }
 
                 ctx.restore();
