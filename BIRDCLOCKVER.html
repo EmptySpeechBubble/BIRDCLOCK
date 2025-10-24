@@ -1448,6 +1448,7 @@ let tallTreeCount = 0;
 let simulationTime = 0; // Track total simulation time for better spawning control
 let lastStatsUpdate = 0; // Track when we last updated the stats display
 let cloudCover = 0; // For weather transition effects
+let isMuted = false; // Global mute state for all audio
 
 // === NEW BIRD BEHAVIOR SYSTEMS ===
 // Danger zone memory - shared across all birds
@@ -14102,7 +14103,7 @@ function spawnOwls() {
             }
 
             // Check if muted
-            if (typeof isMuted !== 'undefined' && isMuted) {
+            if (isMuted) {
                 console.log("Audio is muted, unmute to hear the hits!");
                 return;
             }
@@ -14276,7 +14277,7 @@ function spawnOwls() {
         // Play hourly chime melody
         function playHourlyChime() {
             if (!clockEnabled || !audioContext || playingTheHits) return;
-            if (typeof isMuted !== 'undefined' && isMuted) return;
+            if (isMuted) return;
 
             // Get next melody from playlist
             const melody = hourlyMelodyPlaylist[melodyPlaylistIndex];
@@ -14377,7 +14378,7 @@ function spawnOwls() {
             console.log("synthBirdChirp called - volume:", volume, "birdId:", birdId);
 
             // Check if muted first
-            if (typeof isMuted !== 'undefined' && isMuted) {
+            if (isMuted) {
                 console.log("Audio is muted, skipping chirp");
                 return;
             }
@@ -15867,7 +15868,6 @@ if (antHill) {
 
     // Mute button toggle
     const muteBtn = document.getElementById('muteBtn');
-    let isMuted = false;
 
     if (muteBtn) {
         muteBtn.addEventListener('click', () => {
